@@ -1,0 +1,1806 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 10,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 15,
+      "panels": [],
+      "title": "Overzicht",
+      "type": "row"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "min": -45,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "light-blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 3500
+              },
+              {
+                "color": "#EAB839",
+                "value": 7500
+              },
+              {
+                "color": "red",
+                "value": 10000
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "solar AC_Watt"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-YlRd"
+                }
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 6000
+              },
+              {
+                "id": "displayName",
+                "value": "PV opbrengst"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "energy Total_W main"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Netto verbruik"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "import \"experimental\"\n\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: now(),\n)\n\nfrom(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: now())\n  |> last()\n  |> filter(fn: (r) => r._measurement == \"energy\" and r.meter == \"main\" and r._field == \"Total_W\")\n\n\n\n",
+          "refId": "Netto verbruik",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Total_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "hide": false,
+          "query": "import \"experimental\"\n\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: now(),\n)\n\nfrom(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: now())\n  |> last()\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"AC_Watt\")\n\n",
+          "refId": "PV opbrengst"
+        }
+      ],
+      "title": "Huidig waarden",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "solar AC_Watt"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "PV Opbrengst"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Sun altitude"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisSoftMin",
+                "value": 0
+              },
+              {
+                "id": "unit",
+                "value": "degree"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 90
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#FADE2A",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "energy Total_W main"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Netto verbruik"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Solar"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PV Opbrengst"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 20,
+        "x": 4,
+        "y": 1
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "alias": "Total Watt",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r.meter == \"main\" and r._field == \"Total_W\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "refId": "Total",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Total_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Total Watt",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"AC_Watt\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\n  |> map(fn: (r) => ({\n      r with\n      _value: -r._value\n    })\n  )",
+          "refId": "Solar",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Total_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Verbruik versus PV Opbrengst",
+      "transformations": [],
+      "type": "timeseries"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "#EAB839",
+                "value": 4500
+              },
+              {
+                "color": "red",
+                "value": 6000
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_bruto"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Bruto"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_netto"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Netto"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 6
+      },
+      "id": 22,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "import \"experimental\"\n\nmaxStop = if v.timeRangeStop > now() then now() else v.timeRangeStop\nlimitedStop = experimental.addDuration(\n    d: 2m,\n    to: v.timeRangeStart,\n)\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: maxStop,\n)\n\n// ----\n\nexportmin = from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: limitedStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"Total_Export_kWh\")\n  |> first()\n\nexportmax = from(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"Total_Export_kWh\")\n  |> last()\n\nexporttotal = join(tables: {a: exportmin, b: exportmax}, on: [\"_measurement\"], method: \"inner\")\n  |> map(fn: (r) => ({ r with _value: r._value_b - r._value_a }))\n  |> map(fn: (r) => ({ r with _x: \"x\" }))\n  \n// ----\n\nsolarmin = from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: limitedStop)\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"total_yield\")\n  |> first()\n\nsolarmax = from(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"total_yield\")\n  |> last()\n\nsolartotal = join(tables: {a: solarmin, b: solarmax}, on: [\"_measurement\"], method: \"inner\")\n  |> map(fn: (r) => ({ r with _value: r._value_b - r._value_a }))\n  |> map(fn: (r) => ({ r with _x: \"x\" }))\n\n// ----\n\nselfusage = join(tables: {a: solartotal, b: exporttotal}, on: [\"_x\"], method: \"inner\")\n  |> map(fn: (r) => ({ r with _value: r._value_a - r._value_b }))\n  |> map(fn: (r) => ({ r with _x: \"x\" }))\n\n// ----\n\nimportmin = from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: limitedStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"Total_Import_kWh\")\n  |> first()\n\nimportmax = from(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"Total_Import_kWh\")\n  |> last()\n\nimporttotal = join(tables: {a: importmin, b: importmax}, on: [\"_measurement\"], method: \"inner\")\n  |> map(fn: (r) => ({ r with _value: r._value_b - r._value_a }))\n  |> map(fn: (r) => ({ r with _x: \"x\" }))\n\n//-------\n\njoin(tables: {a: selfusage, b: importtotal}, on: [\"_x\"], method: \"inner\")\n  |> map(fn: (r) => ({ r with _bruto: r._value_a + r._value_b }))",
+          "refId": "Bruto",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "L1_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "hide": false,
+          "query": "import \"experimental\"\n\nmaxStop = if v.timeRangeStop > now() then now() else v.timeRangeStop\nlimitedStop = experimental.addDuration(\n    d: 2m,\n    to: v.timeRangeStart,\n)\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: maxStop,\n)\n\n\nmin = from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: limitedStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"Total_Import_kWh\")\n  |> first()\n\nmax = from(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"Total_Import_kWh\")\n  |> last()\n\n\njoin(tables: {min: min, max: max}, on: [\"_measurement\"], method: \"inner\")\n  |> map(fn: (r) => ({ r with _netto: r._value_max - r._value_min }))\n\n\n\n",
+          "refId": "Netto"
+        }
+      ],
+      "title": "Totaal verbruik",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "(_bruto )|(_netto )(.*)"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "yellow",
+                "value": null
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_ratio"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "displayName",
+                "value": "Eigen verbruik ratio"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-RdYlGr"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_injection"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Injectie"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_bruto"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Bruto opbrengst"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 9
+      },
+      "id": 28,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "import \"experimental\"\n\nmaxStop = if v.timeRangeStop > now() then now() else v.timeRangeStop\nlimitedStop = experimental.addDuration(\n    d: 2m,\n    to: v.timeRangeStart,\n)\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: maxStop,\n)\n\nsolarmin = from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: limitedStop)\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"total_yield\")\n  |> first()\n\nsolarmax = from(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"total_yield\")\n  |> last()\n\njoin(tables: {a: solarmin, b: solarmax}, on: [\"_measurement\"], method: \"inner\")\n  |> map(fn: (r) => ({ r with _bruto: r._value_b - r._value_a }))",
+          "refId": "Opbrengst",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "L1_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "hide": false,
+          "query": "import \"experimental\"\n\nmaxStop = if v.timeRangeStop > now() then now() else v.timeRangeStop\nlimitedStop = experimental.addDuration(\n    d: 2m,\n    to: v.timeRangeStart,\n)\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: maxStop,\n)\n\n// ----\n\nexportmin = from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: limitedStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"Total_Export_kWh\")\n  |> first()\n\nexportmax = from(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"Total_Export_kWh\")\n  |> last()\n\njoin(tables: {a: exportmin, b: exportmax}, on: [\"_measurement\"], method: \"inner\")\n  |> map(fn: (r) => ({ r with _injection: r._value_b - r._value_a }))",
+          "refId": "Injectie"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "hide": false,
+          "query": "import \"experimental\"\n\nmaxStop = if v.timeRangeStop > now() then now() else v.timeRangeStop\nlimitedStop = experimental.addDuration(\n    d: 2m,\n    to: v.timeRangeStart,\n)\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: maxStop,\n)\n\n// ----\n\nexportmin = from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: limitedStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"Total_Export_kWh\")\n  |> first()\n\nexportmax = from(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"Total_Export_kWh\")\n  |> last()\n\nexporttotal = join(tables: {a: exportmin, b: exportmax}, on: [\"_measurement\"], method: \"inner\")\n  |> map(fn: (r) => ({ r with _value: r._value_b - r._value_a }))\n  |> map(fn: (r) => ({ r with _x: \"x\" }))\n\n\n// -----\n\nsolarmin = from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: limitedStop)\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"total_yield\")\n  |> first()\n\nsolarmax = from(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"total_yield\")\n  |> last()\n\nsolartotal = join(tables: {a: solarmin, b: solarmax}, on: [\"_measurement\"], method: \"inner\")\n  |> map(fn: (r) => ({ r with _value: r._value_b - r._value_a }))\n  |> map(fn: (r) => ({ r with _x: \"x\" }))\n\n// -----\n\njoin(tables: {a: solartotal, b: exporttotal}, on: [\"_x\"], method: \"inner\")\n  |> map(fn: (r) => ({ r with _value: r._value_b / r._value_a }))\n  |> map(fn: (r) => ({ r with _ratio: 1.0 - r._value }))",
+          "refId": "Ratio eigen verbruik"
+        }
+      ],
+      "title": "PV",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "(solar _bruto )|(energy _injection )|(_ratio )(.*)"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "id": 13,
+      "panels": [],
+      "title": "Verbruik",
+      "type": "row"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "#EAB839",
+                "value": 4500
+              },
+              {
+                "color": "red",
+                "value": 6000
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L1_W main"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "L1"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L2_W main"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "L2"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L3_W main"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "L3"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 13
+      },
+      "id": 24,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "import \"experimental\"\n\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: now(),\n)\n\nfrom(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: now())\n  |> last()\n  |> filter(fn: (r) => r._measurement == \"energy\" and r.meter == \"main\" and (r._field == \"L1_W\" or r._field == \"L2_W\" or r._field == \"L3_W\"))\n",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "L1_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Huidig verbruik per fase",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 7,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total_W main"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Watt"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 20,
+        "x": 4,
+        "y": 13
+      },
+      "id": 11,
+      "interval": "15m",
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "uid": "000000001"
+          },
+          "hide": false,
+          "query": "  from(bucket: \"home/autogen\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Total_W\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "refId": "A"
+        }
+      ],
+      "title": "Vermogenspieken per kwartier",
+      "transformations": [
+        {
+          "disabled": true,
+          "id": "calculateField",
+          "options": {
+            "alias": "Opwekking",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "Woning",
+                "Tuinhuis"
+              ],
+              "reducer": "sum"
+            },
+            "replaceFields": true
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "#EAB839",
+                "value": 19
+              },
+              {
+                "color": "red",
+                "value": 25.5
+              }
+            ]
+          },
+          "unit": "amp"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L1_A main"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "L1"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L2_A main"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "L2"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L3_A main"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "L3"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 16
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "import \"experimental\"\n\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: now(),\n)\n\nfrom(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: now())\n  |> last()\n  |> filter(fn: (r) => r._measurement == \"energy\" and r.meter == \"main\" and (r._field == \"L1_A\" or r._field == \"L2_A\" or r._field == \"L3_A\"))\n",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "L1_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Huidig amperage per fase",
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "area"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L1_W main"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "L1"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L2_W main"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "L2"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L3_W main"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "L3"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 20,
+        "x": 4,
+        "y": 21
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "alias": "Total Watt",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r.meter == \"main\" and r._field == \"L1_W\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "refId": "L1",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Total_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Total Watt",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r.meter == \"main\" and r._field == \"L2_W\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "refId": "L2",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Total_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Total Watt",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"L3_W\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "refId": "L3",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Total_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Verbruik per fase",
+      "transformations": [],
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 17,
+      "panels": [],
+      "title": "Zonnepanelen",
+      "type": "row"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "#EAB839",
+                "value": 4500
+              },
+              {
+                "color": "red",
+                "value": 6000
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DC_Watt_A"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Schuin dak"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DC_Watt_B"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Plat dak"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 30
+      },
+      "id": 20,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "import \"experimental\"\n\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: now(),\n)\n\nfrom(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: now())\n  |> last()\n  |> filter(fn: (r) => r._measurement == \"solar\" and (r._field == \"DC_Watt_A\" or r._field == \"DC_Watt_B\"))\n",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "L1_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Huidige opbrengst per dakdeel",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 2000
+              },
+              {
+                "color": "red",
+                "value": 4000
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DC_Watt_A"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Schuin dak"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DC_Watt_B"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Plat dak"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Sun altitude"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "unit",
+                "value": "degree"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 20,
+        "x": 4,
+        "y": 30
+      },
+      "id": 19,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"DC_Watt_A\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "hide": false,
+          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"DC_Watt_B\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "uid": "000000006"
+          },
+          "hide": false,
+          "refId": "C",
+          "target": "sun_altitude"
+        }
+      ],
+      "title": "Opbrengst per dakdeel",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 34,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now/d",
+    "to": "now/d"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m"
+    ]
+  },
+  "timezone": "",
+  "title": "Energy",
+  "uid": "WN1NsMx7z",
+  "version": 123,
+  "weekStart": ""
+}
