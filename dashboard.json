@@ -185,7 +185,7 @@
           "refId": "PV opbrengst"
         }
       ],
-      "title": "Huidig waarden",
+      "title": "Huidige waarden",
       "type": "stat"
     },
     {
@@ -659,6 +659,10 @@
                 "value": {
                   "mode": "continuous-RdYlGr"
                 }
+              },
+              {
+                "id": "decimals",
+                "value": 0
               }
             ]
           },
@@ -1801,6 +1805,6 @@
   "timezone": "",
   "title": "Energy",
   "uid": "WN1NsMx7z",
-  "version": 123,
+  "version": 125,
   "weekStart": ""
 }
