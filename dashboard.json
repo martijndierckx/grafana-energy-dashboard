@@ -113,7 +113,7 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 4,
+        "w": 5,
         "x": 0,
         "y": 1
       },
@@ -156,7 +156,7 @@
           "measurement": "energy",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "import \"experimental\"\n\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: now(),\n)\n\nfrom(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: now())\n  |> last()\n  |> filter(fn: (r) => r._measurement == \"energy\" and r.meter == \"main\" and r._field == \"Total_W\")\n\n\n\n",
+          "query": "import \"experimental\"\n\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: now(),\n)\n\nfrom(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: now())\n  |> filter(fn: (r) => r._measurement == \"energy\" and r.meter == \"main\" and r._field == \"Total_W\")\n  |> last()\n\n\n\n",
           "refId": "Netto verbruik",
           "resultFormat": "time_series",
           "select": [
@@ -181,7 +181,7 @@
             "uid": "000000001"
           },
           "hide": false,
-          "query": "import \"experimental\"\n\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: now(),\n)\n\nfrom(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: now())\n  |> last()\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"AC_Watt\")\n\n",
+          "query": "import \"experimental\"\n\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: now(),\n)\n\nfrom(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: now())\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"AC_Watt\")\n  |> last()",
           "refId": "PV opbrengst"
         }
       ],
@@ -320,7 +320,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Netto verbruik"
+                "value": "Netafname"
               }
             ]
           },
@@ -358,8 +358,8 @@
       },
       "gridPos": {
         "h": 11,
-        "w": 20,
-        "x": 4,
+        "w": 19,
+        "x": 5,
         "y": 1
       },
       "id": 7,
@@ -505,7 +505,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Bruto"
+                "value": "Netafname + zelfcons."
               }
             ]
           },
@@ -517,7 +517,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Netto"
+                "value": "Netafname"
               }
             ]
           }
@@ -525,7 +525,7 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 4,
+        "w": 5,
         "x": 0,
         "y": 6
       },
@@ -694,7 +694,7 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 4,
+        "w": 5,
         "x": 0,
         "y": 9
       },
@@ -874,8 +874,8 @@
         ]
       },
       "gridPos": {
-        "h": 3,
-        "w": 4,
+        "h": 4,
+        "w": 5,
         "x": 0,
         "y": 13
       },
@@ -980,7 +980,6 @@
               "mode": "off"
             }
           },
-          "decimals": 2,
           "mappings": [],
           "min": 0,
           "thresholds": {
@@ -1011,8 +1010,8 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 20,
-        "x": 4,
+        "w": 19,
+        "x": 5,
         "y": 13
       },
       "id": 11,
@@ -1033,7 +1032,7 @@
             "uid": "000000001"
           },
           "hide": false,
-          "query": "  from(bucket: \"home/autogen\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Total_W\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "query": "  from(bucket: \"home/autogen\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"Total_W\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
           "refId": "A"
         }
       ],
@@ -1130,10 +1129,10 @@
         ]
       },
       "gridPos": {
-        "h": 3,
-        "w": 4,
+        "h": 4,
+        "w": 5,
         "x": 0,
-        "y": 16
+        "y": 17
       },
       "id": 3,
       "options": {
@@ -1198,11 +1197,154 @@
       "type": "stat"
     },
     {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 17,
+      "panels": [],
+      "title": "Zonnepanelen",
+      "type": "row"
+    },
+    {
       "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "#EAB839",
+                "value": 4500
+              },
+              {
+                "color": "red",
+                "value": 6000
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DC_Watt_A"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Schuin dak"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DC_Watt_B"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Plat dak"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 0,
+        "y": 22
+      },
+      "id": 20,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "import \"experimental\"\n\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: now(),\n)\n\nfrom(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: now())\n  |> last()\n  |> filter(fn: (r) => r._measurement == \"solar\" and (r._field == \"DC_Watt_A\" or r._field == \"DC_Watt_B\"))\n",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "L1_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Huidige opbrengst per dakdeel",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
           },
           "custom": {
             "axisLabel": "",
@@ -1222,6 +1364,196 @@
             "scaleDistribution": {
               "type": "linear"
             },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 2000
+              },
+              {
+                "color": "red",
+                "value": 4000
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DC_Watt_A"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-orange",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Schuin dak"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DC_Watt_B"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-orange",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Plat dak"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Sun altitude"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "unit",
+                "value": "degree"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 19,
+        "x": 5,
+        "y": 22
+      },
+      "id": 19,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"DC_Watt_A\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "hide": false,
+          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"DC_Watt_B\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "uid": "000000006"
+          },
+          "hide": false,
+          "refId": "C",
+          "target": "sun_altitude"
+        }
+      ],
+      "title": "Opbrengst per dakdeel",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "id": 30,
+      "panels": [],
+      "title": "Details",
+      "type": "row"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
             "showPoints": "never",
             "spanNulls": 60000,
             "stacking": {
@@ -1229,7 +1561,7 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "area"
+              "mode": "off"
             }
           },
           "mappings": [],
@@ -1241,7 +1573,7 @@
                 "value": null
               },
               {
-                "color": "#EAB839",
+                "color": "red",
                 "value": 0
               }
             ]
@@ -1256,15 +1588,24 @@
             },
             "properties": [
               {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              },
-              {
                 "id": "displayName",
                 "value": "L1"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#5f76e8",
+                      "value": null
+                    },
+                    {
+                      "color": "#ac23b9",
+                      "value": 0
+                    }
+                  ]
+                }
               }
             ]
           },
@@ -1275,15 +1616,24 @@
             },
             "properties": [
               {
-                "id": "color",
-                "value": {
-                  "fixedColor": "red",
-                  "mode": "fixed"
-                }
-              },
-              {
                 "id": "displayName",
                 "value": "L2"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#18a7cb",
+                      "value": null
+                    },
+                    {
+                      "color": "#d41c81",
+                      "value": 0
+                    }
+                  ]
+                }
               }
             ]
           },
@@ -1294,25 +1644,34 @@
             },
             "properties": [
               {
-                "id": "color",
-                "value": {
-                  "fixedColor": "purple",
-                  "mode": "fixed"
-                }
-              },
-              {
                 "id": "displayName",
                 "value": "L3"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#7ed0bb",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 0
+                    }
+                  ]
+                }
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 20,
-        "x": 4,
-        "y": 21
+        "h": 9,
+        "w": 19,
+        "x": 5,
+        "y": 31
       },
       "id": 9,
       "options": {
@@ -1462,154 +1821,11 @@
       "type": "timeseries"
     },
     {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 29
-      },
-      "id": 17,
-      "panels": [],
-      "title": "Zonnepanelen",
-      "type": "row"
-    },
-    {
       "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "#EAB839",
-                "value": 4500
-              },
-              {
-                "color": "red",
-                "value": 6000
-              }
-            ]
-          },
-          "unit": "watt"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "DC_Watt_A"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Schuin dak"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "DC_Watt_B"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Plat dak"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 0,
-        "y": 30
-      },
-      "id": 20,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "8.3.4",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "000000001"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "energy",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "import \"experimental\"\n\nlimitedStart = experimental.subDuration(\n    d: 2m,\n    from: now(),\n)\n\nfrom(bucket: \"home/autogen\")\n  |> range(start: limitedStart, stop: now())\n  |> last()\n  |> filter(fn: (r) => r._measurement == \"solar\" and (r._field == \"DC_Watt_A\" or r._field == \"DC_Watt_B\"))\n",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "L1_W"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "title": "Huidige opbrengst per dakdeel",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "datasource",
-        "uid": "-- Mixed --"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
+            "mode": "fixed"
           },
           "custom": {
             "axisLabel": "",
@@ -1629,105 +1845,114 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "off"
+              "mode": "area"
             }
           },
           "mappings": [],
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "red",
                 "value": null
               },
               {
-                "color": "#EAB839",
-                "value": 2000
+                "color": "green",
+                "value": 220
               },
               {
                 "color": "red",
-                "value": 4000
+                "value": 250
               }
             ]
           },
-          "unit": "watt"
+          "unit": "volt"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "DC_Watt_A"
+              "options": "L1_V main"
             },
             "properties": [
               {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              },
-              {
                 "id": "displayName",
-                "value": "Schuin dak"
+                "value": "L1"
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "DC_Watt_B"
+              "options": "L2_V main"
             },
             "properties": [
               {
-                "id": "color",
-                "value": {
-                  "fixedColor": "purple",
-                  "mode": "fixed"
-                }
-              },
-              {
                 "id": "displayName",
-                "value": "Plat dak"
+                "value": "L2"
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Sun altitude"
+              "options": "L3_V main"
             },
             "properties": [
               {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "unit",
-                "value": "degree"
-              },
+                "id": "displayName",
+                "value": "L3"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L1"
+            },
+            "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "dark-yellow",
+                  "fixedColor": "dark-purple",
                   "mode": "fixed"
                 }
-              },
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L2"
+            },
+            "properties": [
               {
-                "id": "custom.lineStyle",
+                "id": "color",
                 "value": {
-                  "dash": [
-                    10,
-                    10
-                  ],
-                  "fill": "dash"
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L3"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#16b17d",
+                  "mode": "fixed"
                 }
               }
             ]
@@ -1735,12 +1960,12 @@
         ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 20,
-        "x": 4,
-        "y": 30
+        "h": 9,
+        "w": 19,
+        "x": 5,
+        "y": 40
       },
-      "id": 19,
+      "id": 31,
       "options": {
         "legend": {
           "calcs": [],
@@ -1751,34 +1976,284 @@
           "mode": "multi"
         }
       },
+      "pluginVersion": "8.3.4",
       "targets": [
         {
+          "alias": "Total Watt",
           "datasource": {
             "type": "influxdb",
             "uid": "000000001"
           },
-          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"DC_Watt_A\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r.meter == \"main\" and r._field == \"L1_V\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "refId": "L1",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Total_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
         },
         {
+          "alias": "Total Watt",
           "datasource": {
             "type": "influxdb",
             "uid": "000000001"
           },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"DC_Watt_B\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
-          "refId": "B"
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r.meter == \"main\" and r._field == \"L2_V\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "refId": "L2",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Total_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
         },
         {
+          "alias": "Total Watt",
           "datasource": {
-            "uid": "000000006"
+            "type": "influxdb",
+            "uid": "000000001"
           },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "refId": "C",
-          "target": "sun_altitude"
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"L3_V\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "refId": "L3",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Total_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
         }
       ],
-      "title": "Opbrengst per dakdeel",
+      "title": "Voltage per fase",
+      "transformations": [],
+      "type": "timeseries"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "amp"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Neutral_A main"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "N"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "N"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 19,
+        "x": 5,
+        "y": 49
+      },
+      "id": 32,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "alias": "Total Watt",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "000000001"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "linear"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "energy",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: \"home/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r.meter == \"main\" and r._field == \"Neutral_A\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)",
+          "refId": "N",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "Total_W"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Neuter amperage",
+      "transformations": [],
       "type": "timeseries"
     }
   ],
@@ -1805,6 +2280,6 @@
   "timezone": "",
   "title": "Energy",
   "uid": "WN1NsMx7z",
-  "version": 125,
+  "version": 141,
   "weekStart": ""
 }
