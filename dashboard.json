@@ -1344,6 +1344,118 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "mode": "continuous-BlYlRd"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 7,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Opbrengst"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 19,
+        "x": 5,
+        "y": 22
+      },
+      "id": 33,
+      "interval": "1d",
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "uid": "000000001"
+          },
+          "hide": false,
+          "query": "import \"experimental\"\r\n\r\nlimitedStart = experimental.subDuration(\r\n    d: 31d,\r\n    from: v.timeRangeStop,\r\n)\r\n\r\nsolar = from(bucket: \"home/autogen\")\r\n  |> range(start: limitedStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"solar\" and r._field == \"total_yield\")\r\n  |> window(every: 1d)\r\n\r\nsolarmin = solar\r\n  |> first()\r\n  |> group()\r\n  |> truncateTimeColumn(unit: 1d)\r\n  \r\nsolarmax = solar\r\n  |> last()\r\n  |> group()\r\n  |> truncateTimeColumn(unit: 1d)\r\n\r\njoin(tables: {a: solarmin, b: solarmax}, on: [\"_time\"], method: \"inner\")\r\n  |> map(fn: (r) => ({ r with _value: r._value_b - r._value_a }))\r\n  |> map(fn: (r) => ({ r with _value: if (r._value < 0.0 or r._value > 100.0) then 0.0 else r._value }))\r\n  |> keep(columns: [\"_value\", \"_time\"])",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "1M",
+      "title": "Opbrengst per dag",
+      "transformations": [],
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 30,
+      "panels": [],
+      "title": "Details",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "palette-classic"
           },
           "custom": {
@@ -1473,7 +1585,7 @@
         "h": 8,
         "w": 19,
         "x": 5,
-        "y": 22
+        "y": 30
       },
       "id": 19,
       "options": {
@@ -1515,19 +1627,6 @@
       ],
       "title": "Opbrengst per dakdeel",
       "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 30
-      },
-      "id": 30,
-      "panels": [],
-      "title": "Details",
-      "type": "row"
     },
     {
       "description": "",
@@ -1671,7 +1770,7 @@
         "h": 9,
         "w": 19,
         "x": 5,
-        "y": 31
+        "y": 38
       },
       "id": 9,
       "options": {
@@ -1963,7 +2062,7 @@
         "h": 9,
         "w": 19,
         "x": 5,
-        "y": 40
+        "y": 47
       },
       "id": 31,
       "options": {
@@ -2193,7 +2292,7 @@
         "h": 9,
         "w": 19,
         "x": 5,
-        "y": 49
+        "y": 56
       },
       "id": 32,
       "options": {
@@ -2280,6 +2379,6 @@
   "timezone": "",
   "title": "Energy",
   "uid": "WN1NsMx7z",
-  "version": 141,
+  "version": 153,
   "weekStart": ""
 }
